@@ -1,0 +1,1 @@
+var name="zengwe",date="201707030";console.log(name+date);
