@@ -4,6 +4,156 @@
     color:black;
     font-size:24px;
     background: url("/static/img/logo_g.png");
-
   }
+}
+/********************************scss语法*****************************************/
+//变量使用
+$color: #000000;
+$width: 12px;
+$imgPath:'/public/img/';
+$marginCenter:0px auto 0px auto;
+$fontSize:12px 14px 16px 18px 24px;
+.bg-color{
+    background-color: $color;
+    width: $width;
+    .child{
+        width:100px - $width;//注意预算前后符号加空格
+        background: url(#{$imgPath}logo.png) no-repeat center;
+        margin:$marginCenter;
+        font-size:nth($fontSize,1);//从1开始并非0开始计数
+        &:hover{//伪类必须再前面加上&,意思在当前的类（.child）后面加上:hover
+            background-color: red;
+        }
+        &.active{
+            width: 100px;
+        }
+    }
+    $map:(min:12px,mid:16px,max:18px);
+    .map{
+        width: map-get($map,min);//对map进行key->value取值
+    }
+    //嵌套
+    .parent{
+        height: 100px;
+        .child{
+            @at-root {//跳出到最完成
+                .grandeson{
+                    font-size:12px;
+                }
+            }
+            @at-root  .child{//指明跳出那一层嵌套
+                .jump-child{
+                    font-size:16px;
+                }
+            }
+            @at-root  &{//好像是哪里也没跳出去    .bg-color .parent .child .jump-child-2 { font-size: 16px; }
+                .jump-child-2{
+                    font-size:16px;
+                }
+            }
+            //@at-root (without: ...)和@at-root (with: ...) 暂时没弄   这个是跳出@media的
+        }
+    }
+}
+//minxin使用
+@mixin btn {
+    border:0px none;
+    display:inline-block;
+    &:active{
+        outline:0px none;
+    }
+}
+@mixin backColor($color:#ffffff){
+    background-color: $color;
+}
+@mixin color($color){
+    color:$color;
+}
+.submit{
+    font-size:12px;
+    @include btn;
+    @include backColor(#000000);
+    @include backColor();//使用默认值
+    @include color(#545454);
+}
+//@content
+@mixin max-screen($res){
+    @media only screen and ( max-width: $res )
+    {
+        @content;
+    }
+}
+
+@include max-screen(960px) {
+    body { font-size: 62.5% }
+}
+//继承
+.input-area{
+    width: 100%;
+    display: inline-block;
+}
+.submit-area{
+    @extend .input-area;
+    min-height:30px;
+
+}
+//%占位符 上面的问题 产生了.input-area这个类，有的时候也许不希望产生
+//结果是产生了两个.submit-area-1  一个是继承的结果一个新写入的
+%base{  //好像还不能出现-之类的字符
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
+}
+.submit-area-1{
+    @extend %base;
+    min-height:30px;
+
+}
+//函数
+@function max($param1,$param2){
+    @if($param1>$param2){
+        @return $param1;
+    }@else {
+        @return  $param2;
+    }
+}
+.max-value{
+    font-size:max(12px,24px);
+}
+//判断简洁写法
+//if(true, 1px, 2px) => 1px
+//if(false, 1px, 2px) => 2px
+//循环
+@for $i from 1 through 3 {//包含3
+    .item-#{$i} { width: 2em * $i; }
+}
+@for $i from 1 through 3 {//不包含3
+    .item-#{$i} { width: 2em * $i; }
+}
+//each 循环
+$animal-list: puma, sea-slug, egret, salamander;
+@each $animal in $animal-list {
+    .#{$animal}-icon {
+        background-image: url('/images/#{$animal}.png');
+    }
+}
+$animal-data: (puma, black, default),(sea-slug, blue, pointer),(egret, white, move);
+@each $animal, $color, $cursor in $animal-data {
+    .#{$animal}-icon {
+        background-image: url('/images/#{$animal}.png');
+        border: 2px solid $color;
+        cursor: $cursor;
+    }
+}
+$headings: (h1: 2em, h2: 1.5em, h3: 1.2em);
+@each $header, $size in $headings {
+    #{$header} {
+        font-size: $size;
+    }
+}
+//导入
+@import "./inport.scss";//相对于当前scss路径
+.test{
+    height:$import;
 }

@@ -1,1 +1,1 @@
-var name="zengwe",date="201707030";console.log(name+date);
+var name="zengwe",date="201707030";console.log(name+date),window;

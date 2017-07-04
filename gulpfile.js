@@ -22,11 +22,11 @@ gulp.task('sass', function() {
     gulp.src(['./static_temp/sass/*.scss',"./static_temp/sass/*/*.scss"])
         .pipe(sass())
         .on('error', function(err) {
-            gutil.log('scss Error!', err.message);
+            console.log('scss Error!', err.message);
             this.end();
         })
-        .pipe(cssmin())
-        .pipe(base64func(base64))
+        //.pipe(cssmin())
+        //.pipe(base64func(base64))
         .pipe(gulp.dest('./static/css'));
 });
 gulp.task('js', function() {
